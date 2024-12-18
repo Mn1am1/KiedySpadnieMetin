@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Najbliższa data</title>
+ <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a, #4b2d0c);
+            color: #e5d0a6;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: #e5d0a6;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4b2d0c;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        .timer {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #next-date, #timer, #last-timer {
+            color: #e63946; /* Odcień czerwieni */
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: rgba(229, 208, 166, 0.7);
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDate = new Date("2024-12-13T15:23:00");
+            const interval = (1 * 60 * 60 * 1000) + (2 * 60 * 1000) + (30 * 1000);
+
+            let nextDate = calculateNextDate();
+            let lastDate = calculateLastDate();
+
+            function calculateNextDate() {
+                const now = new Date();
+                let next = new Date(startDate);
+                while (next <= now) {
+                    next = new Date(next.getTime() + interval);
+                }
+                return next;
+            }
+
+            function calculateLastDate() {
+                const now = new Date();
+                let last = new Date(startDate);
+                while (last.getTime() + interval <= now.getTime()) {
+                    last = new Date(last.getTime() + interval);
+                }
+                return last;
+            }
+
+            function updateTimer() {
+                const now = new Date();
+                const diffToNext = nextDate - now;
+                const diffFromLast = now - lastDate;
+
+                if (diffToNext <= 0) {
+                    lastDate = nextDate;
+                    nextDate = calculateNextDate();
+                }
+
+                const hoursToNext = Math.floor(diffToNext / (1000 * 60 * 60));
+                const minutesToNext = Math.floor((diffToNext % (1000 * 60 * 60)) / (1000 * 60));
+                const secondsToNext = Math.floor((diffToNext % (1000 * 60)) / 1000);
+
+                const timeToNextString = hoursToNext > 0 
+                    ? `${hoursToNext} godzin, ${minutesToNext} minut ${secondsToNext} sekund` 
+                    : `${minutesToNext} minut, ${secondsToNext} sekund`;
+
+                const hoursFromLast = Math.floor(diffFromLast / (1000 * 60 * 60));
+                const minutesFromLast = Math.floor((diffFromLast % (1000 * 60 * 60)) / (1000 * 60));
+                const secondsFromLast = Math.floor((diffFromLast % (1000 * 60)) / 1000);
+
+                const timeFromLastString = hoursFromLast > 0 
+                    ? `${hoursFromLast} godzin, ${minutesFromLast} minut, ${secondsFromLast} sekund` 
+                    : `${minutesFromLast} minut, ${secondsFromLast} sekund`;
+
+                document.getElementById('next-date').textContent = nextDate.toLocaleTimeString('pl-PL');
+                document.getElementById('timer').textContent = timeToNextString;
+                document.getElementById('last-timer').textContent = timeFromLastString;
+            }
+
+            function init() {
+                updateTimer();
+                setInterval(updateTimer, 1000);
+            }
+
+            init();
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">DZ</div>
+        <h1>Kiedy spaną metiny</h1>
+        <p>Interwał<strong> 1 godzina 2 minuty 30 sekund</strong></p>
+		<p>Data początkowa obliczeń: <strong>2024-12-13 15:23:00</strong>
+        <p><h2>Najbliższa godzina:<strong><span id="next-date">Ładowanie...</span></strong></h2></p>
+        <p class="timer">Pozostało: <span id="timer">Ładowanie...</span></p>
+		<p class="timer">Ostatni resp: <span id="last-timer">Ładowanie...</span></p>
+        <footer>Autor: <strong>Mniami</strong></footer>
+    </div>
+</body>
+</html>
