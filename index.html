@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Najbliższa data</title>
+    <title>Czas respu Metinów</title>
  <style>
         body {
             font-family: Arial, sans-serif;
@@ -67,7 +67,7 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const startDate = new Date("2024-12-13T15:23:00");
+            const startDate = new Date("2024-12-18T20:22:30");
             const interval = (1 * 60 * 60 * 1000) + (2 * 60 * 1000) + (30 * 1000);
 
             let nextDate = calculateNextDate();
@@ -136,7 +136,7 @@
         <div class="logo">DZ</div>
         <h1>Kiedy spaną metiny</h1>
         <p>Interwał<strong> 1 godzina 2 minuty 30 sekund</strong></p>
-		<p>Data początkowa obliczeń: <strong>2024-12-13 15:23:00</strong>
+		<p>Data początkowa obliczeń: <strong>2024-12-18 20:22:30</strong>
         <p><h2>Najbliższa godzina:<strong><span id="next-date">Ładowanie...</span></strong></h2></p>
         <p class="timer">Pozostało: <span id="timer">Ładowanie...</span></p>
 		<p class="timer">Ostatni resp: <span id="last-timer">Ładowanie...</span></p>
