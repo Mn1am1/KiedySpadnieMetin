@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getNextDates(count) {
         const dates = [];
-        let next = new Date(nextDate);
+        let next = new Date(nextDate.getTime() + interval);
         for (let i = 0; i < count; i++) {
             dates.push(new Date(next));
             next = new Date(next.getTime() + interval);
@@ -97,19 +97,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function init() {
-        updateTimer();
-        setInterval(updateTimer, 1000);
+	function init() {
+		updateTimer();
+		setInterval(updateTimer, 1000);
 
-        const toggleButton = document.getElementById('toggle-button');
-        toggleButton.addEventListener('click', toggleList);
+		const toggleButton = document.getElementById('toggle-button');
+		toggleButton.addEventListener('click', toggleList);
 
-        const radioButtons = document.querySelectorAll('input[name="image-options"]');
-        radioButtons.forEach(button => button.addEventListener('change', updateImage));
+		const radioButtons = document.querySelectorAll('input[name="image-options"]');
+		let lastChecked = null;
 
-        const imageFrame = document.getElementById('image-frame');
-        imageFrame.style.display = 'none';
-    }
+		radioButtons.forEach(button => {
+			button.addEventListener('click', function () {
+				if (this === lastChecked) {
+					this.checked = false;
+					lastChecked = null;
+				} else {
+					lastChecked = this;
+				}
+				updateImage();
+			});
+		});
+
+		const imageFrame = document.getElementById('image-frame');
+		imageFrame.style.display = 'none';
+	}
 
     init();
 });
