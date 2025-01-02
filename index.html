@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Czas respu metinów</title>
- <style>
+    <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -59,6 +59,77 @@
             color: #e63946; /* Odcień czerwieni */
         }
 
+        .toggle-button {
+            margin: 15px 0;
+            padding: 10px 15px;
+            background: #4b2d0c;
+            color: #e5d0a6;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .toggle-button:hover {
+            background: #e63946;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            font-size: 18px; /* Zwiększony rozmiar tekstu */
+            font-weight: bold; /* Pogrubiony tekst */
+            color: #e5d0a6;
+        }
+
+        .image-frame {
+            margin-top: 20px;
+            border: 2px solid #e5d0a6;
+            padding: 10px;
+            border-radius: 10px;
+            background: #1a1a1a;
+            display: none; /* Ukryj ramkę na obraz */
+        }
+
+        .image-frame img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .radio-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .radio-buttons label {
+            display: block;
+            padding: 10px;
+            background: #4b2d0c;
+            color: #e5d0a6;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .radio-buttons input[type="radio"] {
+            display: none;
+        }
+
+        .radio-buttons input[type="radio"]:checked + label {
+            background: #e63946;
+        }
+
         footer {
             margin-top: 20px;
             font-size: 14px;
@@ -67,7 +138,7 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const startDate = new Date("2024-12-26T12:19:00");
+            const startDate = new Date("2025-01-02T10:03:00");
             const interval = (1 * 60 * 60 * 1000) + (2 * 60 * 1000) + (30 * 1000);
 
             let nextDate = calculateNextDate();
@@ -89,6 +160,16 @@
                     last = new Date(last.getTime() + interval);
                 }
                 return last;
+            }
+
+            function getNextDates(count) {
+                const dates = [];
+                let next = new Date(nextDate);
+                for (let i = 0; i < count; i++) {
+                    dates.push(new Date(next));
+                    next = new Date(next.getTime() + interval);
+                }
+                return dates;
             }
 
             function updateTimer() {
@@ -122,10 +203,64 @@
                 document.getElementById('last-timer').textContent = timeFromLastString;
             }
 
-            function init() {
-                updateTimer();
-                setInterval(updateTimer, 1000);
+            function toggleList() {
+                const listContainer = document.getElementById('next-dates-list');
+                if (listContainer.classList.contains('hidden')) {
+                    const nextDates = getNextDates(12); // Fetch next 5 dates
+                    const list = document.createElement('ul');
+
+                    nextDates.forEach(date => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = date.toLocaleTimeString('pl-PL');
+                        list.appendChild(listItem);
+                    });
+
+                    listContainer.innerHTML = '';
+                    listContainer.appendChild(list);
+                    listContainer.classList.remove('hidden');
+                } else {
+                    listContainer.classList.add('hidden');
+                }
             }
+
+            function updateImage() {
+                const selectedOption = document.querySelector('input[name="image-options"]:checked');
+                const imageFrame = document.getElementById('image-frame');
+
+                if (selectedOption) {
+                    const imagePath = selectedOption.dataset.image;
+                    imageFrame.innerHTML = `<img src="${imagePath}" alt="Selected Image">`;
+                    imageFrame.style.display = 'block';
+                } else {
+                    imageFrame.style.display = 'none';
+                }
+            }
+
+			function init() {
+				updateTimer();
+				setInterval(updateTimer, 1000);
+
+				const toggleButton = document.getElementById('toggle-button');
+				toggleButton.addEventListener('click', toggleList);
+
+				const radioButtons = document.querySelectorAll('input[name="image-options"]');
+				let lastChecked = null;
+
+				radioButtons.forEach(button => {
+					button.addEventListener('click', function () {
+						if (this === lastChecked) {
+							this.checked = false;
+							lastChecked = null;
+						} else {
+							lastChecked = this;
+						}
+						updateImage();
+					});
+				});
+
+				const imageFrame = document.getElementById('image-frame');
+				imageFrame.style.display = 'none';
+			}
 
             init();
         });
@@ -135,11 +270,42 @@
     <div class="container">
         <div class="logo">DZ</div>
         <h1>Kiedy spadną metiny</h1>
-        <p>Interwał<strong> 1 godzina 2 minuty 30 sekund</strong></p>
-		<p>Data początkowa obliczeń: <strong>2024-12-26 12:19:00</strong>
-        <p><h2>Najbliższa godzina:<strong><span id="next-date">Ładowanie...</span></strong></h2></p>
+        <p><h2>Najbliższy resp: <strong><span id="next-date">Ładowanie...</span></strong></h2></p>
         <p class="timer">Pozostało: <span id="timer">Ładowanie...</span></p>
-		<p class="timer">Ostatni resp: <span id="last-timer">Ładowanie...</span></p>
+        <p class="timer">Ostatni resp: <span id="last-timer">Ładowanie...</span></p>
+        <button id="toggle-button" class="toggle-button">Kolejne 12 respów</button>
+        <div id="next-dates-list" class="hidden"></div>
+
+        <div>
+            <h3>Mapy metinów</h3>
+            <div class="radio-buttons">
+                <input type="radio" id="option1" name="image-options" data-image="img/m1_chunjo.jpg">
+                <label for="option1">Chunjo M1</label>
+                <input type="radio" id="option2" name="image-options" data-image="img/m1_jino.jpg">
+                <label for="option2">Jino M1</label>
+                <input type="radio" id="option3" name="image-options" data-image="img/m1_shinsoo.jpg">
+                <label for="option3">Shinsoo M1</label>
+				<input type="radio" id="option4" name="image-options" data-image="img/m2_chunjo.jpg">
+                <label for="option4">Chunjo M2</label>
+                <input type="radio" id="option5" name="image-options" data-image="img/m2_jino.jpg">
+                <label for="option5">Jino M2</label>
+                <input type="radio" id="option6" name="image-options" data-image="img/m2_shinsoo.jpg">
+                <label for="option6">Shinsoo M2</label>
+				<input type="radio" id="option7" name="image-options" data-image="img/desert.jpg">
+                <label for="option7">Pustynia</label>
+				<input type="radio" id="option8" name="image-options" data-image="img/fireland.jpg">
+                <label for="option8">Ognista Ziemia</label>
+				<input type="radio" id="option9" name="image-options" data-image="img/green_forest.jpg">
+                <label for="option9">Zielony Las</label>
+				<input type="radio" id="option10" name="image-options" data-image="img/red_forest.jpg">
+                <label for="option10">Czerw. Las</label>
+            </div>
+        </div>
+
+        <div id="image-frame" class="image-frame">
+            <p>Wybierz opcję, aby zobaczyć obraz.</p>
+        </div>
+
         <footer>Autor: <strong>Mniami</strong></footer>
     </div>
 </body>
