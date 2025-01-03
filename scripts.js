@@ -1,10 +1,18 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const startDate = new Date("2025-01-03T15:53:00");
-    const interval = (1 * 60 * 60 * 1000) + (2 * 60 * 1000) + (30 * 1000);
-
+	const startTime = "19:26:30"; // Set up time in format HH:MM:SS    
+	const interval = (1 * 60 * 60 * 1000) + (2 * 60 * 1000) + (30 * 1000);
+	const startDate = getStartDate();
+	
     let nextDate = calculateNextDate();
     let lastDate = calculateLastDate();
-
+	
+	function getStartDate() {
+		const today = new Date();
+		const [hours, minutes, seconds] = startTime.split(':').map(Number);
+		today.setHours(hours, minutes, seconds, 0);
+		return today;
+	}
+	
     function calculateNextDate() {
         const now = new Date();
         let next = new Date(startDate);
