@@ -48,6 +48,12 @@ p {
 	font-weight: bold;
 }
 
+.warning {
+	font-size: 35px;
+	font-weight: bold;
+	color: #e63946;
+}
+
 #next-date, #timer, #last-timer {
 	color: #e63946; /* Odcień czerwieni */
 }
