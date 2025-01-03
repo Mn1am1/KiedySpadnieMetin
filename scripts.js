@@ -70,6 +70,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('next-date').textContent = nextDate.toLocaleTimeString('pl-PL');
         document.getElementById('timer').textContent = timeToNextString;
         document.getElementById('last-timer').textContent = timeFromLastString;
+
+	// Refresh page
+        if (hoursToNext <= 0 && minutesToNext <= 0 && secondsToNext <= 0) {
+            location.reload(); // Odśwież stronę
+        }
     }
 
     function toggleList() {
