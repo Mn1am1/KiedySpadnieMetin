@@ -135,6 +135,13 @@ li {
 	background: #e63946;
 }
 
+.header-image {
+    vertical-align: middle;
+    width: 1em;
+    height: auto;
+    margin-right: 5px;
+}
+
 footer {
 	margin-top: 20px;
 	font-size: 14px;
